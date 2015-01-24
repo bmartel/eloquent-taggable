@@ -19,7 +19,7 @@ class TaggableServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->registerConfig()
+		$this->registerConfig();
 	}
 
 	/**
