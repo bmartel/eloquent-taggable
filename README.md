@@ -1,6 +1,6 @@
 # Eloquent-Taggable
 
-Easily add the ability to tag your Eloquent models in Laravel 4.
+Easily add the ability to tag your Eloquent models in Laravel.
 
 [![Latest Stable Version](https://poser.pugx.org/cviebrock/eloquent-taggable/v/stable.png)](https://packagist.org/packages/cviebrock/eloquent-taggable)
 [![Total Downloads](https://poser.pugx.org/cviebrock/eloquent-taggable/downloads.png)](https://packagist.org/packages/cviebrock/eloquent-taggable)
@@ -78,7 +78,7 @@ Tag your models with the `tag()` method:
 $model->tag('Apple,Banana,Cherry');
 
 // Or an array:
-$model->tag(['Apple', 'Banana', 'Cherry']);  
+$model->tag(['Apple', 'Banana', 'Cherry']);
 ```
 
 The `tag()` method is additive, so you can tag the model again and those tags will be added to the previous ones:
