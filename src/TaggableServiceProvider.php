@@ -48,17 +48,20 @@ class TaggableServiceProvider extends ServiceProvider {
 	 */
   protected function registerConfig()
   {
+  	$userConfigFile    = app()->configPath().'/cviebrock/eloquent-taggable.php';
 
     // Path to the default config
     $defaultConfigPath = __DIR__ . '/config/config.php';
 
     // Load the default config
-    $config = $this->app['files']->getRequire($defaultConfigPath);
+   	$config = $this->app['files']->getRequire($packageConfigFile);
 
+    if (file_exists($userConfigFile)) {
+	    $userConfig = $this->app['files']->getRequire($userConfigFile);
+	    $config     = array_replace_recursive($config, $userConfig);
+    }
 
     // Set each of the items like ->package() previously did
     $this->app['config']->set('cviebrock::eloquent-taggable', $config);
-    $this->app['view']->addNamespace('eloquent-taggable', __DIR__ . '/views');
-    $this->app['translator']->addNamespace('eloquent-taggable', __DIR__ . '/lang');
   }
 }
