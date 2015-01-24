@@ -51,7 +51,7 @@ class TaggableServiceProvider extends ServiceProvider {
   	$userConfigFile    = app()->configPath().'/cviebrock/eloquent-taggable.php';
 
     // Path to the default config
-    $defaultConfigPath = __DIR__ . '/config/config.php';
+    $packageConfigFile = __DIR__ . '/config/config.php';
 
     // Load the default config
    	$config = $this->app['files']->getRequire($packageConfigFile);
