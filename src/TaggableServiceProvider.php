@@ -17,9 +17,10 @@ class TaggableServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function boot()
-	{
-		$this->registerConfig();
+	public function boot() {
+
+		$this->handleConfigs();
+		$this->handleMigrations();
 	}
 
 	/**
@@ -27,8 +28,7 @@ class TaggableServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register()
-	{
+	public function register() {
 	}
 
 	/**
@@ -36,32 +36,26 @@ class TaggableServiceProvider extends ServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function provides()
-	{
-		return array();
+	public function provides() {
+
+		return [];
 	}
 
-	  /**
-	 * Register the config files
-	 *
-	 * @return void
-	 */
-  protected function registerConfig()
-  {
-  	$userConfigFile    = app()->configPath().'/cviebrock/eloquent-taggable.php';
+	private function handleConfigs() {
 
-    // Path to the default config
-    $packageConfigFile = __DIR__ . '/config/config.php';
+		$configPath = __DIR__ . '/config/taggable.php';
 
-    // Load the default config
-   	$config = $this->app['files']->getRequire($packageConfigFile);
+		// Allow this package config to be published to the application config directory.
+		$this->publishes([$configPath => config_path('taggable.php')]);
 
-    if (file_exists($userConfigFile)) {
-	    $userConfig = $this->app['files']->getRequire($userConfigFile);
-	    $config     = array_replace_recursive($config, $userConfig);
-    }
+		// Only require minimum configs to be set in application. Missing values will fall back to
+		// those set in the package config.
+		$this->mergeConfigFrom($configPath, 'taggable');
+	}
 
-    // Set each of the items like ->package() previously did
-    $this->app['config']->set('cviebrock::eloquent-taggable', $config);
-  }
+	private function handleMigrations() {
+
+		$this->publishes([__DIR__ . '/migrations' => base_path('database/migrations')]);
+	}
+
 }
