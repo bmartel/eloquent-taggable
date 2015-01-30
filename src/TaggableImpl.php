@@ -1,6 +1,8 @@
 <?php namespace Cviebrock\EloquentTaggable;
 
+use Config;
 use Cviebrock\EloquentTaggable\Tag;
+use DB;
 
 trait TaggableImpl {
 
@@ -82,7 +84,7 @@ trait TaggableImpl {
 
 		if (is_string($tags))
 		{
-			$delimiters = \Config::get('eloquent-taggable.delimiters', ',');
+			$delimiters = Config::get('eloquent-taggable.delimiters', ',');
 			return preg_split('#['.preg_quote($delimiters,'#').']#', $tags, null, PREG_SPLIT_NO_EMPTY);
 		}
 
@@ -92,11 +94,11 @@ trait TaggableImpl {
 	/**
 	 * Add a single tag to this model.
 	 *
-	 * @param $name
+	 * @param $string
 	 */
-	protected function addOneTag($name)
+	protected function addOneTag($string)
 	{
-		$tag = Tag::firstOrCreate(compact('name'));
+		$tag = Tag::findOrCreate($string);
 
 		if (!$this->tags->contains($tag->id))
 		{
@@ -173,8 +175,7 @@ trait TaggableImpl {
 	 */
 	protected function makeTagList($field)
 	{
-		$delimiters = \Config::get('eloquent-taggable.delimiters', ',');
-		$glue = substr($delimiters, 0, 1);
+		$glue = substr(Config::get('eloquent-taggable.delimiters', ','), 0, 1);
 		$tags = $this->makeTagArray($field);
 		return implode($glue, $tags);
 	}
@@ -187,7 +188,9 @@ trait TaggableImpl {
 	 */
 	protected function makeTagArray($field)
 	{
-		return $this->tags->lists($field,'id');
+		$return  = $this->tags->lists($field,'id');
+
+		return $return;
 	}
 
 	/**
@@ -229,6 +232,73 @@ trait TaggableImpl {
 		{
 			$q->whereIn('normalized', $normalized);
 		});
+	}
+
+	/**
+	 * Delimited string list of all tag names for this model type.
+	 *
+	 * @return string
+	 */
+	public static function tagList()
+	{
+		$glue = static::getListDelimiter();
+		return implode($glue, static::allTags('name'));
+	}
+
+	/**
+	 * All tag names for this given model type formatted as an array
+	 *
+	 * @return mixed
+	 */
+	public static function tagArray()
+	{
+		return static::allTags('name');
+	}
+
+	/**
+	 * Delimited string list of all normalized tag names for this model type.
+	 *
+	 * @return string
+	 */
+	public static function tagListNormalized()
+	{
+		$glue = static::getListDelimiter();
+		return implode($glue, static::allTags('normalized'));
+	}
+
+	/**
+	 * All normalized tag names for this given model type formatted as an array.
+	 *
+	 * @return mixed
+	 */
+	public static function tagArrayNormalized()
+	{
+		return static::allTags('normalized');
+	}
+
+	/**
+	 * Get the list delimiter used from string representations of tags.
+	 *
+	 * @return string
+	 */
+	protected static function getListDelimiter()
+	{
+		return substr(Config::get('eloquent-taggable.delimiters', ','), 0, 1);
+	}
+
+	/**
+	 * Retrieve all the tags for this model type.
+	 *
+	 * @param $nameAttribute
+	 * @return mixed
+	 */
+	protected static function allTags($nameAttribute)
+	{
+		return DB::table('taggable_tags')
+			->join('taggable_taggables', 'taggable_taggables.tag_id', '=', 'taggable_tags.id')
+			->where('taggable_type', '=', get_called_class())
+			->distinct()
+			->lists('taggable_tags.'.$nameAttribute, 'taggable_tags.id');
 	}
 
 }

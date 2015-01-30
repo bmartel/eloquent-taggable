@@ -46,6 +46,21 @@ class Tag extends Eloquent {
 	}
 
 	/**
+	 * Find or create Tag based on normalized name attribute.
+	 *
+	 * @param $name
+	 * @return mixed|static
+	 */
+	public static function findOrCreate($name)
+	{
+		if (!$tag = static::findByName($name))
+		{
+			$tag = static::create(compact('name'));
+		}
+		return $tag;
+	}
+
+	/**
 	 * Find a tag by a normalized name attribute.
 	 *
 	 * @param $name
