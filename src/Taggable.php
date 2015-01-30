@@ -15,6 +15,6 @@ interface Taggable {
 
 	public function scopeWithAllTags($query, $tags);
 
-	public function scopeWithAnyTags($query, $tags=array());
+	public function scopeWithAnyTags($query, $tags = []);
 
 }
