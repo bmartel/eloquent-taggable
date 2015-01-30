@@ -51,7 +51,7 @@ trait TaggableImpl {
 
 		if (is_string($tags))
 		{
-			$delimiters = \Config::get('eloquent-taggable::delimiters', ',');
+			$delimiters = \Config::get('eloquent-taggable.delimiters', ',');
 			return preg_split('#['.preg_quote($delimiters,'#').']#', $tags, null, PREG_SPLIT_NO_EMPTY);
 		}
 
@@ -105,7 +105,7 @@ trait TaggableImpl {
 
 	protected function makeTagList($field)
 	{
-		$delimiters = \Config::get('eloquent-taggable::delimiters', ',');
+		$delimiters = \Config::get('eloquent-taggable.delimiters', ',');
 		$glue = substr($delimiters, 0, 1);
 		$tags = $this->makeTagArray($field);
 		return implode($glue, $tags);

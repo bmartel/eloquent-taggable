@@ -27,7 +27,7 @@ class Tag extends Eloquent {
 
 	public static function normalizeName($value)
 	{
-		$normalizer = \Config::get('eloquent-taggable::normalizer');
+		$normalizer = \Config::get('eloquent-taggable.normalizer');
 		return call_user_func($normalizer, $value);
 	}
 

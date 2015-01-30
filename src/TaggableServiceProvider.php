@@ -43,14 +43,14 @@ class TaggableServiceProvider extends ServiceProvider {
 
 	private function handleConfigs() {
 
-		$configPath = __DIR__ . '/config/taggable.php';
+		$configPath = __DIR__ . '/config/eloquent-taggable.php';
 
 		// Allow this package config to be published to the application config directory.
-		$this->publishes([$configPath => config_path('taggable.php')]);
+		$this->publishes([$configPath => config_path('eloquent-taggable.php')]);
 
 		// Only require minimum configs to be set in application. Missing values will fall back to
 		// those set in the package config.
-		$this->mergeConfigFrom($configPath, 'taggable');
+		$this->mergeConfigFrom($configPath, 'eloquent-taggable');
 	}
 
 	private function handleMigrations() {
